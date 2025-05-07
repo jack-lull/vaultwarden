@@ -1,8 +1,8 @@
 name: Build and Push Docker Image
 on:
   pull_request:
-    branches-ignore:
-      - 'main'
+    # branches-ignore:
+      # - 'main'
 jobs:
   docker:
     runs-on: ubuntu-latest
