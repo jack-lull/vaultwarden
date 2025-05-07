@@ -23,6 +23,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
+          file: ../../dockerfile
           context: .
           push: true
           tags: jacklull/vaultwarden:${{ github.sha }}
