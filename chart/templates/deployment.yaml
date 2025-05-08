@@ -61,28 +61,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-            - name: ADMIN_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key:  ADMIN_TOKEN
-                  name: {{ .Release.Name }}-creds
-            - name: DOMAIN
-              value: {{ .Values.env.DOMAIN}}
-            - name: LOG_FILE
-              value: {{ .Values.env.LOG_FILE}}
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  key:  DATABASE_URL
-                  name: {{ .Values.db.secretName }}
-            - name: DATA_FOLDER
-              value: {{ .Values.env.DATA_FOLDER}}
-            - name: SIGNUPS_ALLOWED
-              value: {{ .Values.env.SIGNUPS_ALLOWED}}
-            - name: SIGNUPS_VERIFY
-              value: {{ .Values.env.SIGNUPS_VERIFY}}
-            - name: WEB_VAULT_ENABLED
-              value: {{ .Values.env.WEB_VAULT_ENABLED}}
+          {{- range $key, $value := .Values.env}}
+            - name: {{ $key }}
+              value: {{ $value }}
+          {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

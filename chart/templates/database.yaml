@@ -5,17 +5,16 @@ metadata:
   labels:
     {{- include "vaultwarden.labels" . | nindent 4 }}
 spec:
-	secretName: {{ .Values.db.secretName}}
-	instance: postgres
-	deletionProtected: true
-	backup:
-  	enable: false
-  	cron: 0 0 * * *
-	credentials:
-  	templates:
-    	- name: DATABASE_URL
-      	template: "{{ `{{ .Protocol }}://{{ .Username }}:{{ .Password }}@{{ .Hostname }}:{{ .Port }}/{{ .Database }}` }}"
-      	secret: true
-
-### TODO
-### to values 9 10
+  secretName: {{ .Values.db.secretName }}
+  instance: {{ .Values.db.instance }}
+  deletionProtected: {{ .Values.db.deleteionProtected}}
+  {{- if .Values.db.backup.enable }}
+  backup:
+    enable: true
+    cron: 0 0 * * *
+  {{- end }}
+  credentials:
+    templates:
+      - name: DATABASE_URL
+        template: "{{ .Protocol }}://{{ .Username }}:{{ .Password }}@{{ .Hostname }}:{{ .Port }}/{{ .Database }}"
+        secret: true

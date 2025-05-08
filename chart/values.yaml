@@ -36,27 +36,35 @@ env:
   SIGNUPS_ALLOWED: 'true'
   SIGNUPS_VERIFY: 'false'
   WEB_VAULT_ENABLED: 'true'
+  ADMIN_TOKEN: 123
 
 db:
   secretName: db-creds
+  instance: postgres
+  deletionProtected: true
+  backup:
+    enable: false
+    cron: 0 0 * * *
 
 service:
   type: ClusterIP
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - chart-example.local
-  path: /
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
-    #  hosts:
-      #  - chart-example.local
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
   # limits:
