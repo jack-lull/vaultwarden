@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: ghcr.io/jack-lull/vaultwarden
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "d29317875bfb8edb044c5d7525759d964ea08d3a"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -30,13 +30,13 @@ securityContext: {}
   # runAsUser: 1000
 
 env:
-  DOMAIN: example.net
-  LOG_FILE: /app/logs/log.txt
-  DATA_FOLDER: /app/data/
+  DOMAIN: 'http://example.net'
+  # LOG_FILE: /app/logs/log.txt
+  # DATA_FOLDER: /app/data/
   SIGNUPS_ALLOWED: 'true'
   SIGNUPS_VERIFY: 'false'
   WEB_VAULT_ENABLED: 'true'
-  ADMIN_TOKEN: 123
+  ADMIN_TOKEN: qwerty123
 
 db:
   secretName: db-creds
@@ -44,7 +44,9 @@ db:
   deletionProtected: true
   backup:
     enable: false
-    cron: 0 0 * * *
+    cron: "0 0 * * *"
+
+favicon: 'https://s3.eterfund.ru/public/wikijsFavicons/favicon.ico'
 
 service:
   type: ClusterIP

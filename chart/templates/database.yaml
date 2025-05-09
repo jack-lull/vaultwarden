@@ -16,5 +16,5 @@ spec:
   credentials:
     templates:
       - name: DATABASE_URL
-        template: "{{ .Protocol }}://{{ .Username }}:{{ .Password }}@{{ .Hostname }}:{{ .Port }}/{{ .Database }}"
+        template: "{{ `{{ .Protocol }}://{{ .Username }}:{{ .Password }}@{{ .Hostname }}:{{ .Port }}/{{ .Database }}` }}"
         secret: true
