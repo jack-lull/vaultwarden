@@ -46,8 +46,6 @@ db:
     enable: false
     cron: "0 0 * * *"
 
-favicon: 'https://s3.eterfund.ru/public/wikijsFavicons/favicon.ico'
-
 service:
   type: ClusterIP
   port: 80
