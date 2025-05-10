@@ -1,0 +1,27 @@
+name: Build and Push Docker Image
+on:
+  push:
+    branches:
+      - main
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Build and push latest
+        uses: macbre/push-to-ghcr@master
+        if: github.ref == 'refs/heads/main'
+        with:
+          image_name: ${{ github.repository }}
+          github_token: ${{ secrets.TOKEN }}
+          context: .
+          image_tag: latest
