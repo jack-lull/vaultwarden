@@ -1,0 +1,21 @@
+---
+apiVersion: kinda.rocks/v1beta1
+kind: Database
+metadata:
+  name: {{ include "vaultwarden.fullname" . }}
+  labels:
+    {{- include "vaultwarden.labels" . | nindent 4 }}
+spec:
+  secretName: {{ .Values.db.secretName }}
+  instance: {{ .Values.db.instance }}
+  deletionProtected: {{ .Values.db.deleteionProtected}}
+  {{- if .Values.db.backup.enable }}
+  backup:
+    enable: true
+    cron: 0 0 * * *
+  {{- end }}
+  credentials:
+    templates:
+      - name: DATABASE_URL
+        template: "{{ `{{ .Protocol }}://{{ .Username }}:{{ .Password }}@{{ .Hostname }}:{{ .Port }}/{{ .Database }}` }}"
+        secret: true

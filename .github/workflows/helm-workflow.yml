@@ -1,0 +1,162 @@
+# name: Helm
+# on:
+  # pull_request:
+    # branches:
+      # - main
+# env:
+  # HELM_VERSION: v3.15.4
+  # HELMFILE_VERSION: v0.167.1 
+  # PYTHON_VERSION: 3.9
+# jobs:
+  # lint:
+    # runs-on: ubuntu-latest
+    # steps:
+      # - name: Checkout
+        # uses: actions/checkout@v3
+        # with:
+          # fetch-depth: 0
+      # - name: Set up Go
+        # uses: actions/setup-go@v3
+      # - name: Set up Helm
+        # uses: azure/setup-helm@v3
+        # with:
+          # version: ${{ env.HELM_VERSION }}
+      # - uses: actions/setup-python@v4
+        # with:
+          # python-version: ${{ env.PYTHON_VERSION }}
+          # check-latest: true
+      # - name: Set up chart-testing
+        # uses: helm/chart-testing-action@v2.6.0
+      # - name: Run chart-testing (lint)
+        # run: ct lint --target-branch main --validate-maintainers=false
+  # test-values:
+    # needs: lint
+    # runs-on: ubuntu-latest
+    # steps:
+      # - name: Checkout
+        # uses: actions/checkout@v3
+      # - name: Run the test
+        # run: |
+          # cd charts/db-operator
+          # ./scripts/test_values -p ./ci/unit-test
+  # test:
+    # needs: test-values
+    # runs-on: ubuntu-latest
+    # strategy:
+      # matrix:
+        # k8s_version:
+          # - v1.22.15
+          # - v1.23.17
+          # - v1.24.15
+          # - v1.25.11
+          # - v1.26.6
+          # - v1.27.3
+          # - v1.28.0
+    # steps:
+      # - name: Checkout
+        # uses: actions/checkout@v3
+        # with:
+          # fetch-depth: 0
+      # - name: Set up Go
+        # uses: actions/setup-go@v3
+      # - name: Set up Helm
+        # uses: azure/setup-helm@v3
+        # with:
+          # version: ${{ env.HELM_VERSION }}
+      # - uses: actions/setup-python@v4
+        # with:
+          # python-version: ${{ env.PYTHON_VERSION }}
+          # check-latest: true
+      # - name: Set up chart-testing
+        # uses: helm/chart-testing-action@v2.6.1
+      # It's not used anymore, but it's a small step, maybe we'll need it in the future, so let it be here
+      # - name: Run chart-testing (list-changed)
+        # id: list-changed
+        # run: |
+          # changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          # if [[ -n "$changed" ]]; then
+            # echo "changed=true" >> "$GITHUB_OUTPUT"
+          # fi
+      # - name: Prepare a config for the kind cluster
+        # run: |
+          # cat > kind-config.yaml <<EOF
+          # three node (two workers) cluster config
+          # kind: Cluster
+          # apiVersion: kind.x-k8s.io/v1alpha4
+          # nodes:
+            # - role: control-plane
+            # - role: worker
+            # - role: worker
+          # EOF
+      # - name: Create kind cluster
+        # uses: helm/kind-action@v1.7.0
+        # with:
+          # node_image: kindest/node:${{ matrix.k8s_version }}
+          # config: ./kind-config.yaml
+# 
+      # - uses: helmfile/helmfile-action@v1.0.0
+        # with:
+          # helmfile-version: ${{ env.HELMFILE_VERSION }}
+          # helm-version: ${{ env.HELM_VERSION }}
+          # helm-plugins: >
+            # https://github.com/databus23/helm-diff, https://github.com/jkroepke/helm-secrets
+          # helmfile-args: sync --wait
+# 
+      # - name: Test the db-operator chart install
+        # run: |
+          # ct install --target-branch main --charts ./charts/db-operator
+          # helmfile destroy
+      # 
+      # - uses: helmfile/helmfile-action@v1.0.0
+        # with:
+          # helmfile-version: ${{ env.HELMFILE_VERSION }}
+          # helm-version: ${{ env.HELM_VERSION }}
+          # helmfile-args: sync --wait
+# 
+      # - name: Test the db-operator chart upgrade
+        # run: |
+          # ct install --target-branch main --charts ./charts/db-operator --upgrade
+          # helmfile destroy
+# 
+      # - uses: helmfile/helmfile-action@v1.0.0
+        # with:
+          # helmfile-version: ${{ env.HELMFILE_VERSION }}
+          # helm-version: ${{ env.HELM_VERSION }}
+          # helmfile-args: sync -e instances --wait
+# 
+      # - name: Test db-instances charts install
+        # run: |
+          # ct install --target-branch main --charts ./charts/db-instances
+          # helmfile destroy
+# 
+      # - uses: helmfile/helmfile-action@v1.0.0
+        # with:
+          # helmfile-version: ${{ env.HELMFILE_VERSION }}
+          # helm-version: ${{ env.HELM_VERSION }}
+          # helmfile-args: sync -e instances --wait
+# 
+      # - name: Test db-instances charts upgrade
+        # run: |
+          # ct install --target-branch main --charts ./charts/db-instances --upgrade
+          # helmfile destroy
+  # release:
+    # runs-on: ubuntu-latest
+    # needs: test
+    # if: github.ref == 'refs/heads/main'
+    # steps:
+      # - name: Checkout
+        # uses: actions/checkout@v3
+        # with:
+          # fetch-depth: 0
+      # - name: Configure Git
+        # run: |
+          # git config user.name "$GITHUB_ACTOR"
+          # git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      # - name: Install Helm
+        # uses: azure/setup-helm@v3
+        # with:
+          # version: v3.9.4
+      # - name: Run chart-releaser
+        # uses: helm/chart-releaser-action@v1.4.0
+        # env:
+          # CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
