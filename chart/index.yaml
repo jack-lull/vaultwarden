@@ -3,12 +3,12 @@ entries:
   vaultwarden:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-05-10T02:55:44.642648+03:00"
+    created: "2025-05-10T03:02:21.320086+03:00"
     description: A Helm chart for Kubernetes
-    digest: 2fccd2471a5f69756b8a3ce7ce93bedcd11fc671502237bed26024f9b7ec3b43
+    digest: bf3dc2f6ff6b98efed75981a77fb76bebae6812ac9d4649e43fec049545013db
     name: vaultwarden
     type: application
     urls:
     - vaultwarden-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-10T02:55:44.641681+03:00"
+generated: "2025-05-10T03:02:21.319367+03:00"
