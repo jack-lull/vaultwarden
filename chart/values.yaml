@@ -28,8 +28,6 @@ namespace:
 
 env:
   DOMAIN: https://example.net
-  # LOG_FILE: /app/logs/log.txt
-  # DATA_FOLDER: /app/data/
   SIGNUPS_ALLOWED: 'true'
   SIGNUPS_VERIFY: 'false'
   WEB_VAULT_ENABLED: 'true'
