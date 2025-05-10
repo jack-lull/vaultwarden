@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/jack-lull/vaultwarden
+  repository: jacklull/vaultwarden
   pullPolicy: IfNotPresent
-  tag: "c5996e6dad26897fbe985046f1d5a897557cbcfb"
+  tag: "d29317875bfb8edb044c5d7525759d964ea08d3a"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -17,22 +17,18 @@ serviceAccount:
 
 podAnnotations: {}
 podLabels: {}
-
 podSecurityContext: {}
-  # fsGroup: 2000
-
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+
+namespace:
+  enabled: true
+  name: vaultwarden
+  protected: true
 
 env:
   DOMAIN: https://example.net
-  # LOG_FILE: /app/logs/log.txt
-  # DATA_FOLDER: /app/data/
+  LOG_FILE: /app/logs/log.txt
+  DATA_FOLDER: /app/data/
   SIGNUPS_ALLOWED: 'true'
   SIGNUPS_VERIFY: 'false'
   WEB_VAULT_ENABLED: 'true'
@@ -64,17 +60,8 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
 livenessProbe:
   httpGet:
@@ -90,21 +77,9 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
 volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
