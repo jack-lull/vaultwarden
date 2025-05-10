@@ -1,10 +1,9 @@
----
 replicaCount: 1
 
 image:
   repository: ghcr.io/jack-lull/vaultwarden
   pullPolicy: IfNotPresent
-  tag: "d29317875bfb8edb044c5d7525759d964ea08d3a"
+  tag: "c5996e6dad26897fbe985046f1d5a897557cbcfb"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -31,7 +30,7 @@ securityContext: {}
   # runAsUser: 1000
 
 env:
-  DOMAIN: 'http://example.net'
+  DOMAIN: https://example.net
   # LOG_FILE: /app/logs/log.txt
   # DATA_FOLDER: /app/data/
   SIGNUPS_ALLOWED: 'true'
@@ -46,6 +45,8 @@ db:
   backup:
     enable: false
     cron: "0 0 * * *"
+
+favicon: 'https://s3.eterfund.ru/public/wikijsFavicons/favicon.ico'
 
 service:
   type: ClusterIP
