@@ -21,7 +21,7 @@ jobs:
           image_name: ${{ github.repository }}
           github_token: ${{ secrets.TOKEN }}
           context: .
-          image_tag: ${{ github.sha }}
+          image_tag: ${{ github.event.pull_request.head.sha }}
       -
         name: Build and push latest
         uses: macbre/push-to-ghcr@master
